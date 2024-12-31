@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+        h2 {
+            color: #24a19c;
+        }
+        p {
+            color: #333;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Order Confirmation</h2>
+        <p>Thank you for your order!</p>
+        <p>Your order details:</p>
+        <ul>
+            {% for item in order_details.items %}
+                <li>{{ item.name }} - Quantity: {{ item.quantity }} - Price: ₹{{ item.price }}</li>
+            {% endfor %}
+        </ul>
+        <p><strong>Total: ₹{{ order_details.total }}</strong></p>
+        <p>We appreciate your business and hope to serve you again soon!</p>
+        <div class="footer">
+            <p>&copy; {{ current_year }} Your Store Name</p>
+        </div>
+    </div>
+</body>
+</html>

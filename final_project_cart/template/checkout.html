@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        background: url("{% static 'hm/images/bg/checkout-bg.jpg' %}") no-repeat center center fixed;
+        background-size: cover;
+        color: #fff;
+    }
+
+    .checkout-container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: rgba(0, 0, 0, 0.8);
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        color: #fff;
+    }
+
+    .checkout-container h2,
+    .checkout-container h3 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #ffcc00;
+    }
+
+    .address-list {
+        margin-bottom: 30px;
+    }
+
+    .address-item {
+        padding: 15px;
+        margin-bottom: 15px;
+        border: 1px solid #444;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+    }
+
+    .address-item input[type="radio"] {
+        margin-right: 10px;
+    }
+
+    .address-item label {
+        font-size: 14px;
+    }
+
+    .cart-summary {
+        margin-top: 20px;
+        padding: 15px;
+        border: 1px solid #444;
+        border-radius: 8px;
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .cart-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    .cart-item p {
+        margin: 0;
+    }
+
+    .cart-total {
+        font-weight: bold;
+        font-size: 18px;
+        text-align: right;
+        margin-top: 10px;
+        color: #ffcc00;
+    }
+
+    .btn-add-address {
+        display: inline-block;
+        padding: 10px 15px;
+        margin-top: 15px;
+        background-color: #ff9900;
+        color: #000;
+        text-decoration: none;
+        border-radius: 8px;
+        font-size: 14px;
+        text-align: center;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn-add-address:hover {
+        background-color: #ffa31a;
+        transform: scale(1.05);
+    }
+
+    .btn-place-order {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        margin-top: 20px;
+        background-color: #28a745;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn-place-order:hover {
+        background-color: #218838;
+        transform: scale(1.05);
+    }
+
+    @media (max-width: 600px) {
+        .cart-item {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .cart-total {
+            text-align: left;
+        }
+    }
+</style>
+
+<div class="checkout-container">
+    <h2>Checkout</h2>
+    <form method="POST" action="{% url 'place_order' %}">
+        {% csrf_token %}
+
+        <!-- Address Selection -->
+        <h3>Select Address</h3>
+        <div class="address-list">
+            {% for addr in address %}
+            <div class="address-item">
+                <input type="radio" name="address" value="{{ addr.id }}" required />
+                <label>
+                    {{ addr.name }} - {{ addr.locality }}, {{ addr.city }}, {{ addr.state }} - {{ addr.zipcode }}
+                </label>
+            </div>
+            {% endfor %}
+            <a href="{% url 'profile' %}" class="btn-add-address">+ Add New Address</a>
+        </div>
+
+        <!-- Cart Summary -->
+        <h3>Cart Items</h3>
+        <div class="cart-summary">
+            {% for item in cart_items %}
+            <div class="cart-item">
+                <p>{{ item.prodt.name }} (Quantity: {{ item.quan }})</p>
+                <p>₹{{ item.total }}</p>
+            </div>
+            {% endfor %}
+            <hr />
+            <p class="cart-total">Total: ₹{{ total }}</p>
+        </div>
+
+        <!-- Place Order Button -->
+        <button type="submit" class="btn-place-order">Place Order</button>
+    </form>
+</div>
+
+{% endblock %}

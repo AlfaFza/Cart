@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+{% comment %} <head>
+<meta name="viewport" content="width=device-width, initial-scale=1"> {% endcomment %}
+<style>
+body{
+  font-family: Calibri, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+  font-family: 'Arial', sans-serif;
+  background: url("{% static 'hm/images/bg/login-bg.jpg' %}") no-repeat center center fixed;
+  background-size: cover;
+  color: #fff;
+}
+.forminput{
+    display: block;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    font-size: 0.9375rem;
+    font-weight: 400;
+    line-height: 1.6;
+    color: #29292e;
+    background-color: #ffffff99;
+    background-clip: padding-box;
+    border: 1px solid #e7a756eb;
+    appearance: none;
+    border-radius: 5px;
+
+}
+.container {
+    padding: 50px;
+  background-color:#77777770;
+}
+
+
+input[type=text]:focus, input[type=password]:focus {
+  display: block;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    font-size: 0.9375rem;
+    font-weight: 400;
+    line-height: 1.6;
+    color: #29292e;
+    background-color: #ffffff99;
+    background-clip: padding-box;
+    border: 1px solid #e7a756eb;
+    appearance: none;
+    border-radius: 5px;
+
+}
+ div {
+            padding: 10px 0;
+         }
+hr {
+  border: 1px solid #f1f1f1;
+  margin-bottom: 25px;
+}
+.registerbtn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 35%;
+  opacity: 0.9;
+}
+.registerbtn:hover {
+  opacity: 1;
+}
+</style>
+
+
+  <div class="container d-flex justify-content-center align-items-center">
+    <div class="p-4 login-container">
+      <h3 class="text-center mb-4">Login</h3>
+      <form  action="login" method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          {% comment %} <label for="username" class="form-label">Username</label> {% endcomment %}
+          <input type="text" name="uname" class="forminput" id="username" placeholder="Enter your username">
+        </div>
+        <div class="mb-3">
+          {% comment %} <label for="password" class="form-label">Password</label> {% endcomment %}
+          <input type="password" name="password" class="forminput" id="password" placeholder="Enter your password">
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+        <p class="text-center mt-3">
+          Don't have an account? <a href="{% url 'register' %}">Sign up</a>
+        </p>
+        <p class="text-center mt-3" > <small > <a href="{% url 'reset_password' %}">Forget Password ?</a></small><br>
+          <small>
+        </p>
+
+      </form>
+    </div>
+  </div>
+
+
+{% endblock %}

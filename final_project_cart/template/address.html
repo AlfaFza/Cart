@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        background: url("{% static 'hm/images/bg/profile-bg.jpg' %}") no-repeat center center fixed;
+        background-size: cover;
+        color: #fff;
+    }
+
+    .btn-secondary {
+        background-color: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .btn-secondary a {
+        text-decoration: none;
+        color: #fff;
+    }
+
+    .btn-secondary a:hover {
+        color: #ffc107;
+    }
+
+    .card {
+        transition: transform 0.3s, box-shadow 0.3s;
+    
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+    .bg{
+        background-color: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .card-title {
+        color: #ffc107;
+    }
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+
+            <!-- Page Title -->
+            <div class="my-5 text-center">
+                <h3>Manage Addresses</h3>
+                <hr>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="btn-group mb-4" role="group" aria-label="Profile Navigation">
+                <button type="button" class="btn btn-secondary">
+                    <a href="{% url 'profile' %}">Profile</a>
+                </button>
+                <button type="button" class="btn btn-secondary">
+                    <a href="#">Address</a>
+                </button>
+                <button type="button" class="btn btn-secondary">
+                    <a href="{% url 'passwordchange' %}">Change Password</a>
+                </button>
+                <button type="button" class="btn btn-secondary">
+                    <a href="{% url 'orders' %}">Your Orders</a>
+                </button>
+            </div>
+
+            <!-- Address Cards -->
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 gx-5">
+                {% for ad in add %}
+                <div class="col mb-4">
+                    <div class="card h-100 d-flex flex-column bg text-light">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">Address {{ forloop.counter }}</h5>
+                            <p class="card-text"><strong>Name:</strong> {{ ad.name }}</p>
+                            <p class="card-text"><strong>Locality:</strong> {{ ad.locality }}</p>
+                            <p class="card-text"><strong>Mobile:</strong> {{ ad.mobile }}</p>
+                            <p class="card-text"><strong>City:</strong> {{ ad.city }}</p>
+                            <p class="card-text"><strong>State:</strong> {{ ad.state }}</p>
+                            <p class="card-text"><strong>Pincode:</strong> {{ ad.zipcode }}</p>
+                            <!-- Flexbox ensures button stays at the bottom -->
+                            <div class="mt-auto text-center">
+                                <a href="{% url 'updateAddress' pk=ad.id %}" class="btn btn-success">Update</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-center">No addresses found. Add one now!</p>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

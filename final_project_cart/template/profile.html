@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        background: url("{% static 'hm/images/bg/profile-bg.jpg' %}") no-repeat center center fixed;
+        background-size: cover;
+        color: #fff;
+    }
+
+    .container {
+        padding: 20px;
+    }
+
+    .btn-group .btn {
+        border-radius: 5px;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .btn-group .btn:hover {
+        background-color: #17a2b8;
+        transform: scale(1.05);
+    }
+
+    .bg-dark {
+        background-color: rgba(0, 0, 0, 0.22); /* Transparent background for the form section */
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    input, select {
+        background-color: rgba(255, 255, 255, 0.2); /* Transparent background for input fields */
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        border-radius: 5px;
+        color: #fff;
+        padding: 10px;
+        width: 100%;
+        margin-bottom: 15px;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    input:focus, select:focus {
+        border-color: #17a2b8;
+        box-shadow: 0 0 5px rgba(23, 162, 184, 0.5);
+        background-color: rgba(255, 255, 255, 0.3); /* Slightly less transparent on focus */
+    }
+
+    .btn-light {
+        background-color: rgba(255, 255, 255, 0.7);
+        color: #343a40;
+        transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    .btn-light:hover {
+        background-color: rgba(255, 255, 255, 0.9);
+        transform: scale(1.05);
+    }
+
+    .alert {
+        margin-top: 10px;
+        text-align: center;
+    }
+
+    @media (max-width: 768px) {
+        .btn-group .btn {
+            margin-bottom: 10px;
+        }
+    }
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <!-- Page Title -->
+            <div class="my-5 text-center">
+                <h3 class="fw-bold text-light">My Profile</h3>
+                <hr class="border-light">
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="text-center mb-4">
+                <div class="btn-group" role="group">
+                    <a href="#" class="btn btn-outline-light">Profile</a>
+                    <a href="{% url 'address' %}" class="btn btn-outline-light">Address</a>
+                    <a href="{% url 'passwordchange' %}" class="btn btn-outline-light">Change Password</a>
+                </div>
+            </div>
+
+            <!-- Form START -->
+            <form class="file-upload" method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <!-- Address Form Section -->
+                    <div class="col-lg-8 mx-auto">
+                        <div class="bg-dark text-light px-4 py-5 rounded shadow-sm">
+                            <h4 class="mb-4 text-center">Add Address</h4>
+                            <div class="row g-3">
+                                <!-- Name -->
+                                <div class="col-md-6">
+                                    <label for="name" class="form-label">Name *</label>
+                                    {{ form.name }}
+                                    <small class="text-danger">{{ form.name.errors }}</small>
+                                </div>
+
+                                <!-- Locality -->
+                                <div class="col-md-6">
+                                    <label for="locality" class="form-label">Locality *</label>
+                                    {{ form.locality }}
+                                    <small class="text-danger">{{ form.locality.errors }}</small>
+                                </div>
+
+                                <!-- City -->
+                                <div class="col-md-6">
+                                    <label for="city" class="form-label">City *</label>
+                                    {{ form.city }}
+                                    <small class="text-danger">{{ form.city.errors }}</small>
+                                </div>
+
+                                <!-- Mobile -->
+                                <div class="col-md-6">
+                                    <label for="mobile" class="form-label">Mobile *</label>
+                                    {{ form.mobile }}
+                                    <small class="text-danger">{{ form.mobile.errors }}</small>
+                                </div>
+
+                                <!-- State -->
+                                <div class="col-md-6">
+                                    <label for="state" class="form-label">State *</label>
+                                    {{ form.state }}
+                                    <small class="text-danger">{{ form.state.errors }}</small>
+                                </div>
+
+                                <!-- Zipcode -->
+                                <div class="col-md-6">
+                                    <label for="zipcode" class="form-label">Zipcode *</label>
+                                    {{ form.zipcode }}
+                                    <small class="text-danger">{{ form.zipcode.errors }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Feedback -->
+                <div class="my-3 text-center">
+                    {% if form.non_field_errors %}
+                        {% for error in form.non_field_errors %}
+                            <div class="alert alert-danger">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if messages %}
+                        {% for msg in messages %}
+                            <div class="alert alert-{{ msg.tags }}">{{ msg }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <!-- Submit Button -->
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-light btn-lg">Save Profile</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

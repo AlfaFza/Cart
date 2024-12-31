@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            padding: 8px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .cart-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #343a4096;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            width: 150px;
+            text-align: center;
+        }
+        .cart-item p{
+            color:#ffffffc7 !important;
+        }
+
+        .cart-item img {
+            width: 80px;
+            height: 80px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .cart-item .product-name {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .cart-item .price {
+            font-size: 12px;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .cart-item .quantity-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .cart-item .quantity-controls a {
+            color: #555;
+            font-size: 14px;
+        }
+
+        .cart-item .remove {
+            color: red;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background-color: #343a409e;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .footer p {
+            margin: 0;
+            font-size: 16px;
+            color: #ffffffc7e;
+        }
+
+        .btn {
+            background-color: #04AA6D;
+            color: white;
+            padding: 8px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background-color: #45a049;
+        }
+
+        @media (max-width: 600px) {
+            .footer {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+
+            .footer p {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h4>
+        <center>CART</center>
+        {% comment %} <span class="price" style="color: #555;">
+            <i class="fa fa-shopping-cart"></i>
+            <b>{{ itc }}</b>
+        </span> {% endcomment %}
+    </h4>
+
+    <div class="cart-container">
+        {% for i in ci %}
+            <div class="cart-item">
+                <a href="{% url 'remove' i.prodt.id %}" class="remove">
+                    <i class="fa fa-trash-o"></i>
+                </a>
+                <img src="{{ i.prodt.img.url }}" alt="{{ i.prodt.name }}">
+                <p class="product-name">{{ i.prodt.name }}</p>
+                <p class="price">Rs. {{ i.prodt.price }}</p>
+                <p class="price">Total: Rs. {{ i.total }}</p>
+                <div class="quantity-controls">
+                    <a href="{% url 'cart_decrement' i.prodt.id %}">
+                        <i class="fa fa-minus"></i>
+                    </a>
+                    <span>{{ i.quan }}</span>
+                    <a href="{% url 'add_cart' i.prodt.id %}">
+                        <i class="fa fa-plus"></i>
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="footer">
+        <p><b>Total: Rs. {{ t }}</b></p>
+        <a href="{% url 'checkout' %}" class="btn">Checkout</a>
+    </div>
+</body>
+</html>
+
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<head>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url("{% static 'hm/images/bg/profile-bg.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+        }
+    
+        /* Custom styling to improve the visual design */
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        .card-body p {
+            font-size: 0.95rem;
+            color:rgb(211, 202, 203);
+        }
+
+        .card-body .btn {
+            width: 48%;
+        }
+       
+
+        /* Improve button responsiveness on smaller screens */
+        @media (max-width: 576px) {
+            .card-body .btn {
+                width: 100%;
+                margin-top: 5px;
+            }
+        }
+
+        /* Styling for order cards with transparent background */
+        .card {
+            background: rgba(255, 255, 255, 0.2); /* Transparent background */
+            border: 1px solid rgba(255, 255, 255, 0.5); /* Subtle border for clarity */
+            backdrop-filter: blur(10px); /* Optional: Apply a blur effect to the background */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for better separation */
+        }
+
+        /* Enhanced card hover effect */
+        .card:hover {
+            transform: scale(1.05);
+            transition: transform 0.3s ease;
+        }
+
+        /* Status badge */
+        .badge {
+            font-size: 0.85rem;
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+
+        /* Ensure proper spacing between cards */
+        .col-md-6, .col-lg-4 {
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+
+<div class="container my-5">
+    <h2 class="text-center mb-4">Your Orders</h2>
+    <div class="row">
+        {% for order in orders %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card shadow-sm rounded">
+                <div class="card-body">
+                    <h5 class="card-title">Order ID: {{ order.order_id }}</h5>
+                    <p><strong>Total Amount:</strong> ₹{{ order.total_amount }}</p>
+                    <p><strong>Status:</strong>
+                        <span class="badge
+                            {% if order.status == 'Completed' %}
+                                bg-success
+                            {% elif order.status == 'Pending' %}
+                                bg-warning
+                            {% else %}
+                                bg-danger
+                            {% endif %}">
+                            {{ order.status }}
+                        </span>
+                    </p>
+                    <p><strong>Date:</strong> {{ order.date }}</p>
+                    <p><strong>Address:</strong> {{ order.address }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                      
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
