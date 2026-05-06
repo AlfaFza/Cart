@@ -77,10 +77,12 @@
                     <p><strong>Total Amount:</strong> ₹{{ order.total_amount }}</p>
                     <p><strong>Status:</strong>
                         <span class="badge
-                            {% if order.status == 'Completed' %}
+                            {% if order.status == 'Confirmed' or order.status == 'Delivered' %}
                                 bg-success
-                            {% elif order.status == 'Pending' %}
+                            {% elif order.status == 'Preparing' %}
                                 bg-warning
+                            {% elif order.status == 'Out for Delivery' %}
+                                bg-info
                             {% else %}
                                 bg-danger
                             {% endif %}">
@@ -89,6 +91,14 @@
                     </p>
                     <p><strong>Date:</strong> {{ order.date }}</p>
                     <p><strong>Address:</strong> {{ order.address }}</p>
+                    <p><strong>Payment: </strong> {{ order.payment_method }}</p>
+                    <p><strong>Status: </strong> {{ order.payment_status }}</p>
+                 {% if order.picked_at and order.delivered_at %}
+                    <p>
+                        ⏱ Delivery Time:
+                        {{ order.delivered_at|timesince:order.picked_at }}
+                    </p>
+                {% endif %}
                     <div class="d-flex justify-content-between align-items-center">
                       
                     </div>

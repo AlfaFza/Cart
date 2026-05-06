@@ -16,18 +16,18 @@ class OrderItemInline(admin.TabularInline):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('order_id', 'user', 'status', 'total_amount', 'date')
+    list_display = ('order_id', 'user', 'status', 'total_amount', 'date','payment_status','deliveryBoy')
     list_filter = ('status', 'date')
     search_fields = ('order_id', 'user__username', 'user__email')
     inlines = [OrderItemInline]
 
     # Add a dropdown to change the status directly from the list view
-    list_editable = ('status',)
+    list_editable = ('status','payment_status','deliveryBoy')
 
     # Allow editable fields in the admin detail view
     fieldsets = (
         (None, {
-            'fields': ('order_id', 'user', 'address', 'total_amount', 'status', 'date')
+            'fields': ('order_id', 'user', 'address', 'total_amount', 'status', 'date','payment_status','deliveryBoy')
         }),
     )
 

@@ -29,7 +29,7 @@ def cart_details(request,tot=0,count=0,cart_items=None):
             tot+=(i.prodt.price*i.quan)
             count+=i.quan
     except ObjectDoesNotExist:
-        pass
+        ct_items = []
 
     return render(request,"cart.html",{'ci':ct_items,'t':tot,'cn':count})
 
@@ -99,26 +99,47 @@ def place_order(request):
         address = Customer.objects.get(id=address_id)
         cart = cartlist.objects.get(cart_id=c_id(request))
         cart_items = items.objects.filter(cart=cart)
+        payment_method = request.POST.get('payment_method')
 
-        # Create a unique order ID
+        # Create order ID
         order_id = get_random_string(10).upper()
         total_amount = sum(item.total() for item in cart_items)
 
-        # Create the order
+        #  Create Order with payment info
         order = Order.objects.create(
-            user=user, order_id=order_id, total_amount=total_amount, address=address
+            user=user,
+            order_id=order_id,
+            total_amount=total_amount,
+            address=address,
+            payment_method=payment_method,
+            payment_status='Pending'
         )
 
-        # Add items to the order
+        #  Add items to order
         for item in cart_items:
             OrderItem.objects.create(
-                order=order, product=item.prodt, quantity=item.quan, price=item.prodt.price
+                order=order,
+                product=item.prodt,
+                quantity=item.quan,
+                price=item.prodt.price
             )
-            # Decrease stock for the product
+
+            # Reduce stock
             item.prodt.stock -= item.quan
             item.prodt.save()
 
-        # Clear the cart
+        #  Payment logic
+        if payment_method == 'ONLINE':
+            # simulate success (or later Razorpay)
+            order.payment_status = 'Paid'
+        else:
+            order.payment_status = 'Pending'
+        
+        
+
+        order.save()
+
+        #  IMPORTANT: clear cart AFTER order
         cart_items.delete()
 
         return redirect('submit_order')
@@ -138,6 +159,16 @@ def orders_view(request):
 @login_required(login_url='login')
 def submit_order(request):
     return render(request,'submitorder.html')
+
+@login_required
+def cancel_order(request, order_id):
+    order = Order.objects.get(id=order_id, user=request.user)
+
+    if order.status in ['Pending', 'Confirmed']:
+        order.status = 'Cancelled'
+        order.save()
+
+    return redirect('orders')
 
 
 

@@ -86,7 +86,11 @@ color:white;}
     <!-- ################################################################################################ -->
     <article>
       <h3 class="heading">QUALITY FOOD ITEMS</h3>
-      <p>Register with us and have quality food items at your door step.</p>
+     {% if user.is_authenticated %}
+      <p>Welcome {{ user.username }}! Enjoy ordering your favorite food.</p>
+     {% else %}
+          <p>Register with us and have quality food items at your door step.</p>
+     {% endif %}
      
     </article>
     <!-- ################################################################################################ -->

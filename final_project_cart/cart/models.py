@@ -5,6 +5,8 @@ from accounts.models import Customer
 from shop.models import products
 from django.contrib.auth import get_user_model
 from django.utils.timezone import now
+from delivery.models import DeliveryBoy
+from django.utils import timezone
 
 User = get_user_model()
 
@@ -30,9 +32,13 @@ class items(models.Model):
 class Order(models.Model):
     STATUS_CHOICES = [
         ('Pending', 'Pending'),
-        ('Processing', 'Processing'),
-        ('Shipped', 'Shipped'),
+        ('Confirmed', 'Confirmed'),
+        ('Preparing', 'Preparing'),
+        ('Assigned', 'Assigned'),
+        ('Collected', 'Collected'),
+        ('Out for Delivery', 'Out for Delivery'),
         ('Delivered', 'Delivered'),
+        ('Failed', 'Failed'),  # delivery failed
         ('Cancelled', 'Cancelled'),
     ]
 
@@ -42,7 +48,57 @@ class Order(models.Model):
     address =models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
     date = models.DateTimeField(auto_now_add=True)
+    PAYMENT_METHOD_CHOICES = [
+            ('COD', 'Cash on Delivery'),
+            ('ONLINE', 'Online Payment'),
+        ]
 
+    PAYMENT_STATUS_CHOICES = [
+            ('Pending', 'Pending'),
+            ('Paid', 'Paid'),
+            ('Failed', 'Failed'),
+        ]
+
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHOD_CHOICES, default='COD')
+    payment_status = models.CharField(max_length=20, choices=PAYMENT_STATUS_CHOICES, default='Pending')
+    
+    delivery_boy = models.ForeignKey(
+            DeliveryBoy,
+            on_delete=models.SET_NULL,
+            null=True,
+            blank=True
+        )
+    
+
+    picked_at = models.DateTimeField(null=True, blank=True)
+    delivered_at = models.DateTimeField(null=True, blank=True)
+    assigned_at = models.DateTimeField(null=True, blank=True)
+    cash_received = models.BooleanField(default=False)
+    
+    def get_total(self):
+        return sum(item.total() for item in self.items.all())
+    
+    def save(self, *args, **kwargs):
+
+        if self.status == 'Delivered' and self.payment_method == 'COD':
+            self.payment_status = 'Paid'
+            self.cash_received = True
+
+        if self.status == 'Cancelled':
+            if self.payment_method == 'ONLINE':
+                self.payment_status = 'Failed'
+                
+        if self.delivery_boy and self.status == 'Confirmed':
+            self.status = 'Assigned'
+            self.assigned_at = timezone.now()
+            
+        # when delivery boy is assigned first time
+        if self.delivery_boy and not self.assigned_at:
+            self.assigned_at = timezone.now()
+            self.status = 'Assigned'
+
+        super().save(*args, **kwargs)
+        
     def __str__(self):
         return f"Order {self.order_id} - {self.user.username}"
 
@@ -51,6 +107,10 @@ class OrderItem(models.Model):
     product = models.ForeignKey(products, on_delete=models.CASCADE)
     quantity = models.IntegerField()
     price = models.FloatField()
+    
+    def total(self):
+        return self.quantity * self.price
 
     def __str__(self):
         return f"{self.product.name} - {self.order.order_id}"
+

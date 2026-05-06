@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+.dashboard {
+    max-width: 800px;
+    margin: 30px auto;
+}
+
+.order-card {
+    background: #fff;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.order-card h4 {
+    margin: 0 0 10px;
+}
+
+.status {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.btn-pick {
+    background-color: #ffc107;
+    color: black;
+}
+
+.btn-deliver {
+    background-color: #28a745;
+    color: white;
+}
+
+</style>
+
+<div class="dashboard">
+    <h2>🚴 Delivery Dashboard</h2>
+
+    {% for order in orders %}
+    <div class="order-card">
+        <h4>Order ID: {{ order.order_id }}</h4>
+
+        <p><strong>Customer:</strong> {{ order.user.username }}</p>
+        <p><strong>Address:</strong> {{ order.address }}</p>
+
+        <p class="status">
+            Status: {{ order.status }}
+        </p>
+
+        {% comment %} <p>
+            Payment: {{ order.payment_method }} |
+            Status: {{ order.payment_status }}
+        </p> {% endcomment %}
+<form method="POST" action="{% url 'update_status' order.id %}">
+    {% csrf_token %}
+
+    {% comment %} <p>Status: {{ order.status }}</p> {% endcomment %}
+    <p>Payment: {{ order.payment_method }} - {{ order.payment_status }}</p>
+
+    {% if order.status == 'Assigned'  %}
+        <button name="status" value="picked">Picked</button>
+
+    {% elif order.status == 'Out for Delivery' %}
+        <button name="status" value="delivered">Delivered</button>
+
+    {% comment %} {% elif order.status == 'Delivered' and order.payment_method == 'COD' and not order.cash_received %}
+        <button name="status" value="cash">Cash Received</button> {% endcomment %}
+
+    {% elif order.payment_method == 'ONLINE' %}
+        <span style="color:green;">✔ Paid Online</span>
+
+    {% elif order.cash_received %}
+        <span style="color:green;">✔ Completed</span>
+    {% endif %}
+</form>
+    {% if order.assigned_at %}
+    <p>🧑‍💼 Assigned at: {{ order.assigned_at|date:"d M Y, h:i A" }}</p>
+    {% endif %}
+
+    {% if order.picked_at %}
+        <p>📦 Picked at: {{ order.picked_at|date:"d M Y, h:i A" }}</p>
+    {% endif %}
+
+    {% if order.delivered_at %}
+        <p>✅ Delivered at: {{ order.delivered_at|date:"d M Y, h:i A" }}</p>
+    {% endif %}
+
+   
+
+    </div>
+    {% empty %}
+        <p>No orders assigned.</p>
+    {% endfor %}
+</div>
+
+{% endblock %}

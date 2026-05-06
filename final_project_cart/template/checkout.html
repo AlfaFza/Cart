@@ -158,6 +158,19 @@
             <hr />
             <p class="cart-total">Total: ₹{{ total }}</p>
         </div>
+        <!-- Payment Method -->
+        <h3>Payment Method</h3>
+        <div class="address-list">
+            <div class="address-item">
+                <input type="radio" name="payment_method" value="COD" checked>
+                <label>Cash on Delivery (COD)</label>
+            </div>
+
+            <div class="address-item">
+                <input type="radio" name="payment_method" value="ONLINE">
+                <label>Pay Online</label>
+            </div>
+        </div>
 
         <!-- Place Order Button -->
         <button type="submit" class="btn-place-order">Place Order</button>
